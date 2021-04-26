@@ -5,20 +5,20 @@ import com.puggian.bowling.exceptions.FramePinsLimitExceededException;
 
 public class Frame {
 
-    private Integer firstBallPins = null;
-    private Integer secondBallPins = null;
+    private Ball firstBall = null;
+    private Ball secondBall = null;
     private boolean finished = false;
     private int score = 0;
 
-    public boolean addBall(int pins) {
-        if (firstBallPins == null) {
-            firstBallPins = pins;
+    public boolean addBall(int pins, boolean fault) {
+        if (firstBall == null) {
+            firstBall = new Ball(pins, fault);
             if (pins == 10) {
                 finished = true;
             }
             return finished;
-        } else if (secondBallPins == null) {
-            secondBallPins = pins;
+        } else if (secondBall == null) {
+            secondBall = new Ball(pins, fault);
             validatePinsLimit();
             finished = true;
             return true;
@@ -27,16 +27,16 @@ public class Frame {
         }
     }
 
-    public Integer getFirstBallPins() {
-        return firstBallPins;
+    public Ball getFirstBall() {
+        return firstBall;
     }
 
-    public Integer getSecondBallPins() {
-        return secondBallPins;
+    public Ball getSecondBall() {
+        return secondBall;
     }
 
     private void validatePinsLimit() {
-        if (this.firstBallPins + this.secondBallPins > 10) {
+        if (this.firstBall.getPins() + this.secondBall.getPins() > 10) {
             throw new FramePinsLimitExceededException("Frames can only sum a maximum of 10 pins");
         }
     }

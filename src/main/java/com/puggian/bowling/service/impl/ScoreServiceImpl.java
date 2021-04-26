@@ -44,33 +44,33 @@ public class ScoreServiceImpl implements ScoreService {
         sb.append("Pinfalls\t");
         for (int i = 0; i < 9; i++) {
             Frame frame = p.getFrame(i);
-            if (frame.getFirstBallPins() == 10) {
+            if (frame.getFirstBall().getPins() == 10) {
                 sb.append("\tX\t");
                 continue;
             }
-            sb.append(frame.getFirstBallPins());
+            sb.append(frame.getFirstBall());
             sb.append("\t");
-            if (frame.getFirstBallPins() + frame.getSecondBallPins() == 10) {
+            if (frame.getFirstBall().getPins() + frame.getSecondBall().getPins() == 10) {
                 sb.append("/\t");
             } else {
-                sb.append(frame.getSecondBallPins());
+                sb.append(frame.getSecondBall());
                 sb.append("\t");
             }
         }
         Frame lastFrame = p.getFrame(9);
-        if (lastFrame.getFirstBallPins() == 10) {
+        if (lastFrame.getFirstBall().getPins() == 10) {
             sb.append("X\t");
-            sb.append(p.getBonusBallPins(0));
+            sb.append(p.getBonusBall(0));
             sb.append("\t");
-            sb.append(p.getBonusBallPins(1));
+            sb.append(p.getBonusBall(1));
         } else {
-            sb.append(lastFrame.getFirstBallPins());
+            sb.append(lastFrame.getFirstBall());
             sb.append("\t");
-            if (lastFrame.getFirstBallPins() + lastFrame.getSecondBallPins() == 10) {
+            if (lastFrame.getFirstBall().getPins() + lastFrame.getSecondBall().getPins() == 10) {
                 sb.append("/\t");
-                sb.append(p.getBonusBallPins(0));
+                sb.append(p.getBonusBall(0));
             } else {
-                sb.append(lastFrame.getSecondBallPins());
+                sb.append(lastFrame.getSecondBall());
             }
         }
         sb.append("\n");

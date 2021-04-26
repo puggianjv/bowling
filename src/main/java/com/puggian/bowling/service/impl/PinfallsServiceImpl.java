@@ -5,6 +5,8 @@ import com.puggian.bowling.exceptions.BallsLimitExceededException;
 import com.puggian.bowling.exceptions.InvalidFormatException;
 import com.puggian.bowling.exceptions.WrongOrderException;
 import com.puggian.bowling.input.Chance;
+import com.puggian.bowling.model.Ball;
+import com.puggian.bowling.model.Frame;
 import com.puggian.bowling.model.Player;
 import com.puggian.bowling.service.PinfallsService;
 
@@ -25,18 +27,20 @@ public class PinfallsServiceImpl implements PinfallsService {
         Optional<Player> playerOpt = playerDAO.findByName(chance.getPlayerName());
         if (currentFrame == 0) {
             playerOpt.ifPresentOrElse(player -> {
-                if(player.getNumber() == 1 && player.getFrame(currentFrame).isFinished()) {
+                Frame frame = player.getFrame(currentFrame);
+                if(player.getNumber() == 1 && frame.isFinished()) {
                     totalPlayers = currentPlayer - 1;
                     currentPlayer = 1;
                     currentFrame++;
                 } else {
-                    player.getFrame(currentFrame).addBall(chance.getPins());
+                    frame.addBall(chance.getPins(), chance.isFault());
                     playerDAO.savePlayer(player);
                     currentPlayer++;
                 }
             }, () -> {
                 Player player = new Player(chance.getPlayerName(), currentPlayer);
-                player.getFrame(currentFrame).addBall(chance.getPins());
+                Frame frame = player.getFrame(currentFrame);
+                frame.addBall(chance.getPins(), chance.isFault());
                 playerDAO.savePlayer(player);
                 if (chance.getPins() == 10) {
                     currentPlayer++;
@@ -46,7 +50,7 @@ public class PinfallsServiceImpl implements PinfallsService {
 
         if (currentFrame > 0 && currentFrame < 9) {
             playerOpt.ifPresentOrElse(player -> {
-                boolean finished = player.getFrame(currentFrame).addBall(chance.getPins());
+                boolean finished = player.getFrame(currentFrame).addBall(chance.getPins(), chance.isFault());
                 playerDAO.savePlayer(player);
                 if (finished) {
                     currentPlayer++;
@@ -61,27 +65,25 @@ public class PinfallsServiceImpl implements PinfallsService {
         } else if (currentFrame == 9) {
             playerOpt.ifPresentOrElse(player -> {
                 validateCurrentPlayerTime(currentPlayer, player.getName());
-                Integer firstBallPins = player.getFrame(currentFrame).getFirstBallPins();
-                Integer secondBallPins = player.getFrame(currentPlayer).getSecondBallPins();
-                if (firstBallPins == null) {
-                    player.getFrame(currentFrame).addBall(chance.getPins());
+                Ball firstBall = player.getFrame(currentFrame).getFirstBall();
+                Ball secondBall = player.getFrame(currentPlayer).getSecondBall();
+                if (firstBall == null) {
+                    player.getFrame(currentFrame).addBall(chance.getPins(), chance.isFault());
                     playerDAO.savePlayer(player);
-                } else if (firstBallPins == 10) {
-                    boolean finished = player.addBonusBall(chance.getPins());
+                } else if (firstBall.getPins() == 10) {
+                    boolean finished = player.addBonusBall(chance.getPins(), chance.isFault());
                     playerDAO.savePlayer(player);
                     if (finished) {
                         currentPlayer++;
                     }
-                } else if (secondBallPins == null) {
-                    player.getFrame(currentFrame).addBall(chance.getPins());
+                } else if (secondBall == null) {
+                    player.getFrame(currentFrame).addBall(chance.getPins(), chance.isFault());
                     playerDAO.savePlayer(player);
-                    Integer firstBall = player.getFrame(currentPlayer).getFirstBallPins();
-                    Integer secondBall = player.getFrame(currentPlayer).getSecondBallPins();
-                    if (firstBall + secondBall < 10) {
+                    if (firstBall.getPins() + secondBall.getPins() < 10) {
                         currentPlayer++;
                     }
-                } else if (firstBallPins + secondBallPins == 10) {
-                    player.addBonusBall(chance.getPins());
+                } else if (firstBall.getPins() + secondBall.getPins() == 10) {
+                    player.addBonusBall(chance.getPins(), chance.isFault());
                     playerDAO.savePlayer(player);
                     currentPlayer++;
                 } else {
