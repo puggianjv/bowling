@@ -50,6 +50,7 @@ public class PinfallsServiceImpl implements PinfallsService {
 
         if (currentFrame > 0 && currentFrame < 9) {
             playerOpt.ifPresentOrElse(player -> {
+                validateCurrentPlayerTime(currentPlayer, player.getName());
                 boolean finished = player.getFrame(currentFrame).addBall(chance.getPins(), chance.isFault());
                 playerDAO.savePlayer(player);
                 if (finished) {
@@ -66,7 +67,6 @@ public class PinfallsServiceImpl implements PinfallsService {
             playerOpt.ifPresentOrElse(player -> {
                 validateCurrentPlayerTime(currentPlayer, player.getName());
                 Ball firstBall = player.getFrame(currentFrame).getFirstBall();
-                Ball secondBall = player.getFrame(currentPlayer).getSecondBall();
                 if (firstBall == null) {
                     player.getFrame(currentFrame).addBall(chance.getPins(), chance.isFault());
                     playerDAO.savePlayer(player);
@@ -76,13 +76,13 @@ public class PinfallsServiceImpl implements PinfallsService {
                     if (finished) {
                         currentPlayer++;
                     }
-                } else if (secondBall == null) {
+                } else if (player.getFrame(currentFrame).getSecondBall() == null) {
                     player.getFrame(currentFrame).addBall(chance.getPins(), chance.isFault());
                     playerDAO.savePlayer(player);
-                    if (firstBall.getPins() + secondBall.getPins() < 10) {
+                    if (firstBall.getPins() + player.getFrame(currentFrame).getSecondBall().getPins() < 10) {
                         currentPlayer++;
                     }
-                } else if (firstBall.getPins() + secondBall.getPins() == 10) {
+                } else if (firstBall.getPins() + player.getFrame(currentFrame).getSecondBall().getPins() == 10) {
                     player.addBonusBall(chance.getPins(), chance.isFault());
                     playerDAO.savePlayer(player);
                     currentPlayer++;

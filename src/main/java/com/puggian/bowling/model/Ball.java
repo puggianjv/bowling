@@ -13,18 +13,6 @@ public class Ball {
         return pins;
     }
 
-    public void setPins(int pins) {
-        this.pins = pins;
-    }
-
-    public boolean isFault() {
-        return fault;
-    }
-
-    public void setFault(boolean fault) {
-        this.fault = fault;
-    }
-
     @Override
     public String toString() {
         if (fault) {

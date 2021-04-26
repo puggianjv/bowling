@@ -2,8 +2,8 @@ package com.puggian.bowling.service.impl;
 
 import com.puggian.bowling.model.Frame;
 import com.puggian.bowling.model.Player;
-import com.puggian.bowling.service.ScoreService;
 import com.puggian.bowling.service.PlayerService;
+import com.puggian.bowling.service.ScoreService;
 
 import java.util.List;
 

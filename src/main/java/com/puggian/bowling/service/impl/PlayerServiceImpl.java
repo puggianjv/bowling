@@ -2,7 +2,6 @@ package com.puggian.bowling.service.impl;
 
 import com.puggian.bowling.dao.PlayerDAO;
 import com.puggian.bowling.model.Player;
-import com.puggian.bowling.dao.impl.PlayerDAOImpl;
 import com.puggian.bowling.service.PlayerService;
 
 import java.util.List;
