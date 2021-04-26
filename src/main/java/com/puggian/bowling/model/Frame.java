@@ -8,6 +8,7 @@ public class Frame {
     private Integer firstBallPins = null;
     private Integer secondBallPins = null;
     private boolean finished = false;
+    private int score = 0;
 
     public boolean addBall(int pins) {
         if (firstBallPins == null) {
@@ -42,5 +43,13 @@ public class Frame {
 
     public boolean isFinished() {
         return finished;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }
